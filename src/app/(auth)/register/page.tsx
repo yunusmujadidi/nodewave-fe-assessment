@@ -1,7 +1,6 @@
 import { AuthTitle } from "@/app/(auth)/components/auth-title";
 import { Background } from "@/components/background";
 import { RegisterForm } from "@/components/forms/register-form";
-import { LoginSection } from "../components/login-section";
 
 const RegisterPage = () => {
   return (
@@ -16,8 +15,6 @@ const RegisterPage = () => {
         />
         {/* register form */}
         <RegisterForm />
-        {/* login section */}
-        <LoginSection />
       </div>
     </div>
   );

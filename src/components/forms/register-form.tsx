@@ -13,6 +13,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,8 @@ import { registerFormSchema } from "@/lib/zod-schema";
 import { api } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/forms/form-label";
+import { useAuth } from "@/hooks/use-auth";
 
 export const RegisterForm = () => {
   const router = useRouter();
@@ -37,7 +40,7 @@ export const RegisterForm = () => {
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
-      fullname: "",
+      fullName: "",
       lastName: "",
       email: "",
       phoneNumber: "",
@@ -51,10 +54,10 @@ export const RegisterForm = () => {
   // register mutation func
   const registerMutation = useMutation({
     mutationFn: async (data: z.infer<typeof registerFormSchema>) => {
-      const { fullname, email, password, confirmPassword, ...restData } = data;
+      const { fullName, email, password } = data;
 
       const registerData = {
-        fullname,
+        fullName,
         email,
         password,
       };
@@ -65,11 +68,24 @@ export const RegisterForm = () => {
       return response.data;
     },
 
-    onSuccess: () => {
-      toast.success("Registration successful! Please login to continue.");
+    onSuccess: (data) => {
+      const token = data?.content?.token;
+      const user = data?.content?.user;
 
-      // redirect to login page
-      router.push("/login");
+      if (token && user) {
+        // Save user and token to zustand store
+        useAuth.getState().login(
+          {
+            id: user.id,
+            email: user.email,
+            name: user.fullName,
+          },
+          token
+        );
+
+        toast.success("Welcome! Your account has been created.");
+        router.push("/dashboard");
+      }
     },
 
     onError: (error: any) => {
@@ -100,7 +116,7 @@ export const RegisterForm = () => {
               {/* first name */}
               <FormField
                 control={form.control}
-                name="fullname"
+                name="fullName"
                 render={({ field }) => (
                   <div className="relative w-full">
                     <FormItem>
@@ -109,7 +125,7 @@ export const RegisterForm = () => {
                           type="text"
                           placeholder=" "
                           className={`h-12 border-1 focus-visible:ring-[#50B5FF]/20 peer bg-white ${
-                            form.formState.errors.fullname ||
+                            form.formState.errors.fullName ||
                             registerMutation.isError
                               ? "border-[#FC5A5A] focus-visible:border-[#FC5A5A]"
                               : "border-gray-300 focus-visible:border-[#50B5FF]"
@@ -117,9 +133,9 @@ export const RegisterForm = () => {
                           {...field}
                         />
                       </FormControl>
-                      <label className="absolute left-3 top-3 text-[#92929D] text-base font-light transition-all duration-200 ease-in-out pointer-events-none peer-focus-visible:-top-2 peer-focus-visible:text-[#50B5FF] peer-focus-visible:bg-white peer-focus-visible:px-1 peer-focus-visible:text-xs peer-focus-visible:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-[#50B5FF] peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-medium">
+                      <Label error={!!form.formState.errors.fullName}>
                         Full Name
-                      </label>
+                      </Label>
                       <FormMessage />
                     </FormItem>
                   </div>
@@ -134,12 +150,11 @@ export const RegisterForm = () => {
                   placeholder=" "
                   className="h-12 border-1 border-gray-300 focus-visible:border-[#50B5FF] focus-visible:ring-[#50B5FF]/20 peer"
                 />
-                <label className="absolute left-3 top-3 text-[#92929D] text-base font-light transition-all duration-200 ease-in-out pointer-events-none peer-focus-visible:-top-2 peer-focus-visible:text-[#50B5FF] peer-focus-visible:bg-white peer-focus-visible:px-1 peer-focus-visible:text-xs peer-focus-visible:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-[#50B5FF] peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-medium">
-                  Last Name
-                </label>
+                <Label> Last Name</Label>
               </div>
             </div>
 
+            {/* row 2 */}
             {/* email input */}
             <FormField
               control={form.control}
@@ -160,16 +175,16 @@ export const RegisterForm = () => {
                         {...field}
                       />
                     </FormControl>
-                    <label className="absolute left-3 top-3 text-[#92929D] text-base font-light transition-all duration-200 ease-in-out pointer-events-none peer-focus-visible:-top-2 peer-focus-visible:text-[#50B5FF] peer-focus-visible:bg-white peer-focus-visible:px-1 peer-focus-visible:text-xs peer-focus-visible:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-[#50B5FF] peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-medium">
+                    <Label error={!!form.formState.errors.email}>
                       Email Address
-                    </label>
+                    </Label>
                     <FormMessage />
                   </FormItem>
                 </div>
               )}
             />
 
-            {/* row 2*/}
+            {/* row 3*/}
             <div className="flex flex-wrap gap-4">
               {/* country code */}
               <div className="relative">
@@ -189,9 +204,7 @@ export const RegisterForm = () => {
                   placeholder=" "
                   className="h-12 border-1 border-gray-300 focus-visible:border-[#50B5FF] focus-visible:ring-[#50B5FF]/20 peer"
                 />
-                <label className="absolute left-3 top-3 text-[#92929D] text-base font-light transition-all duration-200 ease-in-out pointer-events-none peer-focus-visible:-top-2 peer-focus-visible:text-[#50B5FF] peer-focus-visible:bg-white peer-focus-visible:px-1 peer-focus-visible:text-xs peer-focus-visible:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-[#50B5FF] peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-medium">
-                  Phone Number
-                </label>
+                <Label>Phone Number</Label>
               </div>
 
               {/* country select */}
@@ -214,7 +227,7 @@ export const RegisterForm = () => {
               </div>
             </div>
 
-            {/* row 3*/}
+            {/* row 4*/}
             <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
               {/* password */}
               <FormField
@@ -236,9 +249,9 @@ export const RegisterForm = () => {
                           {...field}
                         />
                       </FormControl>
-                      <label className="absolute left-3 top-3 text-[#92929D] text-base font-light transition-all duration-200 ease-in-out pointer-events-none peer-focus-visible:-top-2 peer-focus-visible:text-[#50B5FF] peer-focus-visible:bg-white peer-focus-visible:px-1 peer-focus-visible:text-xs peer-focus-visible:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-[#50B5FF] peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-medium">
+                      <Label error={!!form.formState.errors.password}>
                         Password
-                      </label>
+                      </Label>
                       <FormMessage />
                     </FormItem>
                   </div>
@@ -265,9 +278,9 @@ export const RegisterForm = () => {
                           {...field}
                         />
                       </FormControl>
-                      <label className="absolute left-3 top-3 text-[#92929D] text-base font-light transition-all duration-200 ease-in-out pointer-events-none peer-focus-visible:-top-2 peer-focus-visible:text-[#50B5FF] peer-focus-visible:bg-white peer-focus-visible:px-1 peer-focus-visible:text-xs peer-focus-visible:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-[#50B5FF] peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-medium">
+                      <Label error={!!form.formState.errors.confirmPassword}>
                         Confirm Password
-                      </label>
+                      </Label>
                       <FormMessage />
                     </FormItem>
                   </div>
@@ -275,11 +288,9 @@ export const RegisterForm = () => {
               />
             </div>
 
-            {/* row 4 */}
+            {/* row 5 */}
             <div className="space-y-5">
-              <label className="font-normal text-[#92929D]">
-                Tell us about yourself
-              </label>
+              <label>Tell us about yourself</label>
               <Textarea
                 disabled
                 placeholder="Hello my name..."

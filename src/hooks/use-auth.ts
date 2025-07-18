@@ -23,7 +23,6 @@ export const useAuth = create<AuthStore>()(
       token: null,
       isAuthenticated: false,
       login: (user, token) => {
-        localStorage.setItem("nodewave-token", token);
         set({ user, token, isAuthenticated: true });
       },
       logout: () => {
@@ -32,7 +31,7 @@ export const useAuth = create<AuthStore>()(
       },
     }),
     {
-      name: "nodewave-token",
+      name: "auth-storage",
     }
   )
 );

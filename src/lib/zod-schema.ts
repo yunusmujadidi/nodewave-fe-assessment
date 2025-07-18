@@ -7,7 +7,7 @@ export const loginFormSchema = z.object({
 
 export const registerFormSchema = z
   .object({
-    fullname: z.string().min(1, "Please enter your fullname"),
+    fullName: z.string().min(1, "Please enter your fullname"),
     lastName: z.string().optional(),
     email: z
       .string()

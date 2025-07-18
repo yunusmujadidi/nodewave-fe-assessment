@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/use-auth";
 import axios from "axios";
 
 export const api = axios.create({
@@ -9,7 +10,7 @@ export const api = axios.create({
 
 // req intercept add bearer token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("nodewave-token");
+  const token = useAuth.getState().token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -21,8 +22,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("nodewave-token");
-
+      // reset the zustand store
+      useAuth.getState().logout();
       window.location.href = "/login";
     }
     return Promise.reject(error);
