@@ -32,7 +32,7 @@ export const useAuth = create<AuthStore>()(
       },
     }),
     {
-      name: "nodewave-auth",
+      name: "nodewave-token",
     }
   )
 );
