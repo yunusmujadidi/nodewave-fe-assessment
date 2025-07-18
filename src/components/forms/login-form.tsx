@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/label";
+import { Label } from "@/components/forms/form-label";
 import { Label as LabelUI } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,8 +47,8 @@ export const LoginForm = () => {
     },
 
     onSuccess: (data) => {
-      //   store data in useAuth hooks
-      login(data.content.email, data.content.token);
+      // store data in useAuth hooks
+      login(data.user, data.token);
       toast.success("Login successful!");
 
       // redirect to dashboard

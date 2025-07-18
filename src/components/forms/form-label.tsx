@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Label as LabelUI } from "./ui/label";
+import { Label as LabelUI } from "../ui/label";
 
 interface LabelProps {
   children: ReactNode;
