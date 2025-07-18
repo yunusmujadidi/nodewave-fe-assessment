@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Poppins, Roboto, Inter } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Poppins,
+  Roboto,
+  Inter,
+  Rubik,
+} from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,6 +30,11 @@ const roboto = Roboto({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
 });
+const rubik = Rubik({
+  variable: "--font-roboto",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Nodewave: Todo App",
   description: "Simple TODO APP",
@@ -36,7 +48,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${roboto.variable} antialiased min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${roboto.variable} ${rubik.variable} antialiased min-h-screen`}
       >
         <main>{children}</main>
       </body>
