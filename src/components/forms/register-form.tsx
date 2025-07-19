@@ -84,7 +84,8 @@ export const RegisterForm = () => {
         );
 
         toast.success("Welcome! Your account has been created.");
-        router.push("/dashboard");
+        // redirect
+        router.push("/");
       }
     },
 

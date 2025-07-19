@@ -1,13 +1,13 @@
 "use client";
 import z from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Background } from "@/components/background";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { todoActions } from "@/actions/todo-actions";
 import { useAuth } from "@/hooks/use-auth";
@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
   const [filter, setFilter] = useState<"all" | "done" | "undone">("all");
@@ -29,6 +30,8 @@ const Home = () => {
   const queryClient = useQueryClient();
   const { user, token, logout } = useAuth();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const router = useRouter();
 
   // query params
   const queryParams = {
@@ -99,9 +102,26 @@ const Home = () => {
   });
 
   if (!token) {
-    return <div>Please log in</div>;
+    return (
+      <div className="bg-[#E6E6E6] min-h-screen flex items-center justify-center px-4">
+        <Background />
+        <Card className="z-10 p-10 max-w-md w-full shadow-xl rounded-2xl bg-white border border-gray-200 text-center space-y-6">
+          <h2 className="text-2xl font-bold text-[#174286] font-rubik">
+            You are not logged in
+          </h2>
+          <p className="text-gray-500">
+            Please log in to access your to-do list.
+          </p>
+          <Button
+            className="w-full h-12 text-lg font-semibold"
+            onClick={() => router.push("/login")}
+          >
+            Go to Login
+          </Button>
+        </Card>
+      </div>
+    );
   }
-
   return (
     <div className="bg-[#E6E6E6] flex items-center justify-center min-h-screen px-4">
       {/* bg rectangle component */}

@@ -52,8 +52,12 @@ export const LoginForm = () => {
       login(data.content.user, data.content.token);
       toast.success("Login successful!");
       console.log("after login:", useAuth.getState());
-      // redirect to dashboard
-      router.push("/dashboard");
+      // redirect
+      if (data.user.email === "admin@nodewave.id") {
+        router.push("/dashboard");
+      } else {
+        router.push("/");
+      }
     },
 
     onError: (error: any) => {
