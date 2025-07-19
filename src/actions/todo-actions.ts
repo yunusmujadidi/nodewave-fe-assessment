@@ -19,17 +19,58 @@ export interface TodoResponse {
   errors: string[];
 }
 
+// Define types for parameters
+interface GetTodosParams {
+  filters?: Record<string, string | number | boolean>;
+  searchFilters?: Record<string, string | number | boolean>;
+  rangedFilters?: Array<{
+    key: string;
+    start: string | number | Date;
+    end: string | number | Date;
+  }>;
+  page?: number;
+  rows?: number;
+  orderKey?: string;
+  orderRule?: "asc" | "desc";
+}
+
+interface QueryParams {
+  filters?: string;
+  searchFilters?: string;
+  rangedFilters?: string;
+  page?: number;
+  rows?: number;
+  orderKey?: string;
+  orderRule?: "asc" | "desc";
+}
+
 export const todoActions = {
   // get all todos
-  getTodos: (params?: {
-    filters?: Record<string, any>;
-    searchFilters?: Record<string, any>;
-    rangedFilters?: Array<{ key: string; start: any; end: any }>;
-    page?: number;
-    rows?: number;
-    orderKey?: string;
-    orderRule?: "asc" | "desc";
-  }) => api.get<TodoResponse>("/todos", { params }),
+  getTodos: (params?: GetTodosParams) => {
+    const queryParams: QueryParams = {};
+
+    // copy simple properties
+    if (params?.page !== undefined) queryParams.page = params.page;
+    if (params?.rows !== undefined) queryParams.rows = params.rows;
+    if (params?.orderKey !== undefined) queryParams.orderKey = params.orderKey;
+    if (params?.orderRule !== undefined)
+      queryParams.orderRule = params.orderRule;
+
+    // parse to json string
+    if (params?.filters) {
+      queryParams.filters = JSON.stringify(params.filters);
+    }
+
+    if (params?.searchFilters) {
+      queryParams.searchFilters = JSON.stringify(params.searchFilters);
+    }
+
+    if (params?.rangedFilters) {
+      queryParams.rangedFilters = JSON.stringify(params.rangedFilters);
+    }
+
+    return api.get<TodoResponse>("/todos", { params: queryParams });
+  },
 
   // create todo
   createTodo: (item: string) => api.post("/todos", { item }),

@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Geist,
-  Geist_Mono,
-  Poppins,
-  Roboto,
-  Inter,
-  Rubik,
-} from "next/font/google";
+import { Geist, Geist_Mono, Poppins, Roboto, Rubik } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/providers/query-provider";

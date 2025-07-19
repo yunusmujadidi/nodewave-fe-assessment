@@ -53,14 +53,16 @@ export const LoginForm = () => {
       toast.success("Login successful!");
       console.log("after login:", useAuth.getState());
       // redirect
-      if (data.user.email === "admin@nodewave.id") {
+      if (data.content.user.email === "admin@nodewave.id") {
         router.push("/dashboard");
       } else {
         router.push("/");
       }
     },
 
-    onError: (error: any) => {
+    onError: (
+      error: Error & { response?: { data?: { message?: string } } }
+    ) => {
       toast.error(error.response?.data?.message || "Something went wrong");
     },
   });

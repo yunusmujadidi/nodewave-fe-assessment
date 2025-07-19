@@ -13,7 +13,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -89,7 +88,16 @@ export const RegisterForm = () => {
       }
     },
 
-    onError: (error: any) => {
+    onError: (
+      error: Error & {
+        response?: {
+          data?: {
+            errors?: string[];
+            message?: string;
+          };
+        };
+      }
+    ) => {
       const errorMessage =
         error.response?.data?.errors?.[0] ||
         error.response?.data?.message ||
