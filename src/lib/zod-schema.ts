@@ -26,3 +26,7 @@ export const registerFormSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+
+export const todoSchema = z.object({
+  item: z.string().min(1, "Todo cannot be empty"),
+});

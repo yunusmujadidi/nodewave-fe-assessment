@@ -10,7 +10,7 @@ export const api = axios.create({
 
 // req intercept add bearer token
 api.interceptors.request.use((config) => {
-  const token = useAuth.getState().token;
+  const { token } = useAuth.getState();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -22,9 +22,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // reset the zustand store
-      useAuth.getState().logout();
-      window.location.href = "/login";
+      const { logout } = useAuth.getState();
+      logout();
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }

@@ -48,9 +48,10 @@ export const LoginForm = () => {
 
     onSuccess: (data) => {
       // store data in useAuth hooks
-      login(data.user, data.token);
+      console.log("Login success:", data);
+      login(data.content.user, data.content.token);
       toast.success("Login successful!");
-
+      console.log("after login:", useAuth.getState());
       // redirect to dashboard
       router.push("/dashboard");
     },
