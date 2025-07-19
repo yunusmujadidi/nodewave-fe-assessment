@@ -1,18 +1,9 @@
 "use client";
 
-import { LogOut, Search, User } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { useRouter } from "next/navigation";
+import { UserNavbar } from "./user-navbar";
 
 interface SearchHeaderProps {
   onSearch?: (value: string) => void;
@@ -25,9 +16,6 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
   searchValue = "",
   placeholder = "Search (Ctrl+/)",
 }) => {
-  const { user, logout } = useAuth();
-  const router = useRouter();
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     // Handle Ctrl+/ shortcut
     if ((e.ctrlKey || e.metaKey) && e.key === "/") {
@@ -37,11 +25,6 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
         input.focus();
       }
     }
-  };
-
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
   };
 
   useEffect(() => {
@@ -77,39 +60,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
         </div>
 
         {/* user navbar */}
-        <div className="flex items-center gap-3">
-          <span className="text-gray-700 font-medium">
-            {user?.name || "Ahmad Akbar"}
-          </span>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center cursor-pointer">
-                <User className="w-4 h-4 text-white" />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {user?.name}
-                  </p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user?.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="cursor-pointer"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <UserNavbar />
       </div>
     </div>
   );

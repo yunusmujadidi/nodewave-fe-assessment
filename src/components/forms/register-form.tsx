@@ -77,7 +77,7 @@ export const RegisterForm = () => {
           {
             id: user.id,
             email: user.email,
-            name: user.fullName,
+            fullName: user.fullName,
           },
           token
         );

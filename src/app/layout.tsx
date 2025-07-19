@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Poppins, Roboto, Rubik } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Inter,
+  Poppins,
+  Roboto,
+  Rubik,
+} from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/providers/query-provider";
@@ -26,7 +33,12 @@ const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
 });
 const rubik = Rubik({
-  variable: "--font-roboto",
+  variable: "--font-rubik",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -43,7 +55,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${roboto.variable} ${rubik.variable} antialiased min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${roboto.variable} ${rubik.variable} ${inter.variable} antialiased min-h-screen`}
       >
         <QueryProvider>
           <main>{children}</main>
